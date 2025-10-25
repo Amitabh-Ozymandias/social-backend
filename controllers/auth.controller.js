@@ -32,7 +32,13 @@ export const signUp = async (req, res) => {
 
     const token = genToken(newUser._id);
 
-    res.cookie("token", token, { httpOnly: true, sameSite: true });
+    res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,         // must be true in production (HTTPS)
+    sameSite: "none",     // allow cross-origin
+    maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
+});
+
     res.status(201).json({
       message: "User registered successfully",
       user: { id: newUser._id, username: newUser.username, email: newUser.email },
@@ -56,7 +62,13 @@ export const signIn = async (req, res) => {
     if (!isMatch) return res.status(401).json({ message: "Incorrect password" });
 
     const token = genToken(user._id);
-    res.cookie("token", token, { httpOnly: true, sameSite: true });
+    res.cookie("token", token, {
+    httpOnly: true,
+    secure: true,         // must be true in production (HTTPS)
+    sameSite: "none",     // allow cross-origin
+    maxAge: 1000 * 60 * 60 * 24 * 30 // 30 days
+    });
+
     res.status(200).json({
       message: "Login successful",
       user: { id: user._id, username: user.username, email: user.email },
